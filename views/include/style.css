@@ -1,0 +1,495 @@
+body {
+    font-family: 微軟正黑體;
+    background-color:aliceblue;
+    color: white;
+}
+li {
+    list-style-type: none;
+}
+
+.navbar {
+    background-color:darkslategrey;
+    width: 100%;
+    height: 60px;
+    margin: 0 auto;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: row;
+}
+.navbar a {
+    height: 100%;
+    width: 15%;
+    font-size: 20px;
+    font-weight: bold;
+    color: lightgray;
+    text-decoration: none;
+    text-align: center;
+    line-height: 50px;
+    font-weight: bold;
+
+    transition: all 1s ease;
+}
+.navbar a:hover {
+    color:white;
+}
+.hoverbox {
+    width: 15%;
+    height: 5px;
+    background-color: gray;
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transition: all .4s ease;
+}
+
+
+
+#nav_slide {
+    width: 1200px;
+    height: 800px;
+}
+.slide-container {
+    position: relative;
+    margin: auto;
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+.slider {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    overflow: hidden;
+
+    box-shadow: 3px 0 3px 0 darkgray, -3px 0 3px 0 darkgray;
+
+    scroll-behavior: smooth;
+}
+.slider img {
+    opacity: 0.75;
+    object-fit: cover;
+}
+
+#about {
+    width: 60%;
+    height: 85%;
+    top: 50%;
+    left: 20%;
+    background-color: darkslategrey;
+    opacity: 0.8;
+
+    font-size: 25px;
+    font-weight:bolder;
+    line-height: 2;
+    border-radius: 1.5%;
+    
+    position: absolute;
+}
+#about > div{
+    width: 80%;
+    margin: auto;
+}
+.avatar {
+    display: flex;
+    justify-content: space-between;
+}
+.avatar img {
+    width: auto;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+main {
+    width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: 3px 0 3px 0 darkgray, -3px 0 3px 0 darkgray;
+}
+
+.paragraph {
+    width: 100%;
+
+    font-size: 20px;
+    line-height: 2;
+    
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+.paragraph > img {
+    position: absolute;
+    width: 1200px;
+    height: inherit;
+    opacity: 0.8;
+    object-fit: cover;
+    z-index: 100;
+}
+.paragraph > * {
+    z-index: 101;
+}
+.paragraph > h1 {
+    background: linear-gradient(to right, rgba(138, 43, 226, 0.6), rgba(138, 43, 226, 0.1));
+    width: 94%;
+    text-align: left;
+    margin-left: auto;
+    padding: 1%;
+}
+
+#skill {
+    height: 800px;
+    background-color:darkgray;
+}
+#skill > div {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+#skill > div > div {
+    margin-top: 25%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    height: 50%;
+    padding: 2.5%;
+    background-color:dimgrey;
+    border-radius: 1%;
+}
+#skilllist {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+#skilllist > div{
+    margin: auto;
+    width: 30%;
+    height: 45%;
+    display: flex;
+    flex-direction: column;
+}
+.r-progress {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    mask:  radial-gradient(transparent 0 50%, #000 50% 0);
+}
+
+#programming {
+    flex-direction: column;
+    height: 600px;
+}
+#programming > *:not(img, h1) {
+    margin: auto;
+}
+.g-container {
+    width: 80%;
+    height: 25px;
+    border-radius: 25px;
+    background: #eee;
+}
+.g-progress {
+    width: 50%;
+    height: inherit;
+    border-radius: 25px 0 0 25px;
+    background: #0f0;
+    font-size: 25px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+#language {
+    height: 500px;
+    flex-direction: column;
+    background-color: rgb(92, 91, 128);
+}
+.languages {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-content: flex-start;
+}
+.languages > div {
+    width: 20%;
+    height: 90%;
+
+    background-color: darkslategray;
+    border-radius: 5%;
+
+    padding: 1%;
+    margin: auto;
+}
+.languages > div > img {
+    width: 100%;
+}
+
+#interest {
+    height: 750px;
+}
+#int_slide {
+    width: 750px;
+    height: 500px;
+}
+#previous, #next {
+    cursor: pointer;
+    position: absolute;
+    border-radius: 25%;
+
+    background: rgba(211, 211, 211, 0.5);
+    color: #fff;
+    font-weight: bold;
+
+    padding: 15px;
+    top: calc(50% - 25px);
+    left: -20px;
+
+    z-index: 103;
+}
+#next {
+    left: unset;
+    right: -20px;
+}
+#text {
+    position: absolute;
+
+    font-size: 150px;
+    font-weight: 900;
+}
+
+#resume {
+    margin: 15% auto;
+    width: 800px;
+    height: 400px;
+    border-radius: 15px;
+    background-color: rgba(0, 0, 128, 0.6);
+    box-shadow: 3px 0 3px 0 darkgray, -3px 0 3px 0 darkgray;
+}
+#resume > img {
+    width: 800px;
+    border-radius: 15px 15px 0 0;
+    opacity: 0.35;
+}
+#resume a {
+    margin: auto;
+    
+    color: white;
+    text-decoration: none;
+    font-size: 40px;
+    font-weight: bold;
+
+    border: #0f0 2px solid;
+    border-radius: 15px;
+    padding: 1%;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.5s ease;
+}
+#resume a:hover {
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+#contact {
+    width: 75%;
+    height: 500px;
+    margin: 0 auto;
+    border-radius: 15px 15px 0 0;
+
+    display: flex;
+    flex-direction: row;
+
+    background-color: darkslategray;
+    opacity: 0.8;
+    box-shadow: 3px 0 3px 0 darkgray, -3px 0 3px 0 darkgray;
+
+    font-size: 20px;
+    font-weight: bold;
+}
+#contact > * {
+    width: 50%;
+    height: 100%;
+}
+
+#myInformation {
+    margin-left: 5%;
+    margin-right: 5%;
+    display: flex;
+    flex-direction: column;
+}
+#myInformation > *:not(.formal) {
+    height: 16%;
+}
+.formal {
+    height: 10%;
+}
+#myInformation img {
+    width: 20px;
+    height: 20px;
+}
+#media {
+    display: flex;
+    flex-direction: row;
+}
+#media > * {
+    width: 33%;
+    margin: auto;
+}
+#media img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+}
+
+#writeUs {
+    display: flex;
+    flex-direction: column;
+
+    margin: auto;
+}
+#writeUs > h1 {
+    height: 10%;
+}
+.input {
+    display: flex;
+    flex-direction: column;
+}
+form {
+    display: flex;
+    flex-direction: column;
+}
+form > div:not(.input_container) {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.input_container {
+    display: flex;
+    flex-direction: row;
+}
+.input_container > div {
+    width: 40%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.input {
+    margin: 1%;
+    display: flex;
+    flex-direction: column;
+}
+textarea {
+    columns: 20;
+    border: 0;
+    background-color:rgba(0, 0, 0, 0);
+    border-bottom: 2px lightgray solid;
+    cursor: pointer;
+}
+#mailTo > input {
+    width: 200px;
+    height:50px;
+    margin: 5%;
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+
+    border: rgba(255, 255, 255, 0.3) 2px solid;
+    border-radius: 5px;
+    padding: 1%;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.5s ease;
+}
+#mailTo > input:hover {
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+#myBtn {
+    width: 50px;
+    height: 50px;
+    display: none;
+    position: fixed;
+
+    bottom: 50px;
+    right: 50px;
+
+    border: none;
+    outline: none;
+
+    background-color: rgba(128, 128, 128, 0.8);
+    color: white;
+    cursor: pointer;
+    border-radius: 10px; /* Rounded corners */
+    font-size: 20px; /* Increase font size */
+    font-weight: bold;
+}
+
+
+
+.container-register {
+    margin-top: 5%;
+    height: 100%;
+}
+.container-signin {
+	margin-top: 10%;
+    height: 400px;
+}
+.container-changePassword {
+	margin-top: 5%;
+    height: 500px;
+}
+
+.wrapper {    
+	width: 50%;
+	margin: 0 auto;
+  border-radius: 15px;
+
+  background-color: darkslategray;
+  opacity: 0.8;
+  box-shadow: 3px 0 3px 0 darkgray, -3px 0 3px 0 darkgray;
+
+  font-size: 20px;
+  font-weight: bold;
+	color: white;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+
+	max-width: 60%;
+	height: 100%;
+	margin: 0 auto;
+}
+
+.form-heading {
+	font-size: 50px;
+	text-align: center;
+	margin: 10% auto;
+	height: 10%;
+}
+
+.form-control {
+	background-color: darkslategray;
+	border: 0;
+  border-bottom: 3px black solid;
+  cursor: pointer;
+
+	position: relative;
+	font-size: 16px;
+	width: 100%;
+	height: 30%;
+}
+
+.form > button {
+	width: 50%;
+	height: 10%;
+	margin: 5% auto;
+	background-color: gray;
+
+	font-size: 20px;
+	color: white;
+}
