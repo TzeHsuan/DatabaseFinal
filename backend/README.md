@@ -11,3 +11,5 @@ db_check.php : 連接資料庫 （username 和 password 要改成自己的才能
 record-check.php : 諮商者飲食紀錄輸入檢查 (檢查輸入正確後，新增新的飲食紀錄到資料庫）
 
 registration_check.php : 諮商者註冊檢查（檢查各欄位輸入正確後，新增新的諮商者帳號到資料庫）
+
+diet_choose.php : 將 frontend 回傳的營養師 ID 設為已登入諮詢者的 Diet_ID
