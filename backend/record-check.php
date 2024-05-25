@@ -3,7 +3,7 @@ require_once dirname(__FILE__)."/db_check.php";
 session_start();
 
 if (isset($_SESSION['ID']) && isset($_SESSION['Email'])) {
-
+	$conn = db_check(); //added by Tsou
     //include "db_conn.php";
 
 		if (isset($_POST['Protein']) && isset($_POST['Fat']) && isset($_POST['Carb']) && isset($_POST['Weight'])) {

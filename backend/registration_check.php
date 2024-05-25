@@ -4,7 +4,7 @@ session_start();
 //include "db_check.php";
 
 if (isset($_POST['Email']) && isset($_POST['Password']) && isset($_POST['FName']) && isset($_POST['LName']) && isset($_POST['Age']) && isset($_POST['Height']) && isset($_POST['Weight']) && isset($_POST['Ideal_Fat'])){
-
+	$conn = db_check(); //added by Tsou
 	function validate($data){
 		$data = trim($data);
 	  	$data = stripslashes($data);

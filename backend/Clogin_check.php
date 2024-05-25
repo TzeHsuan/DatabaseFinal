@@ -1,10 +1,10 @@
 <?php
-require_once dirname(__FILE__)."/db_check.php";
+require_once dirname(__FILE__)."/db_check.php"; //added by Tsou
 session_start(); 
 //include "db_check.php";
 
 if (isset($_POST['Email']) && isset($_POST['Password'])) {
-
+	$conn = db_check(); //added by Tsou
 	function validate($data){
     	$data = trim($data);
 	  	$data = stripslashes($data);

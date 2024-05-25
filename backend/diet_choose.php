@@ -5,6 +5,7 @@ session_start();
 
 // 檢查請求方法是不是用POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $conn = db_check(); //added by Tsou
     $diet_id = $_POST['diet_id'];
     $consultant_id = $_SESSION['consultant_id'];
     // 更新已登入諮詢者的 Diet_ID 為 diet_id
