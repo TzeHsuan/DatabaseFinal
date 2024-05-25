@@ -1,7 +1,7 @@
 <?php
-
+require_once dirname(__FILE__)."/db_check.php";
 session_start(); 
-include "db_check.php";
+//include "db_check.php";
 
 // 檢查請求方法是不是用POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

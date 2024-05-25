@@ -1,7 +1,7 @@
 <?php
-
+require_once dirname(__FILE__)."/db_check.php";
 session_start(); 
-include "db_check.php";
+//include "db_check.php";
 
 if (isset($_POST['Diet_ID']) && isset($_POST['Password'])) {
 

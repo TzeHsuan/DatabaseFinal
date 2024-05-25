@@ -1,6 +1,7 @@
 <?php
+require_once dirname(__FILE__)."/db_check.php";
 session_start();
-include "db_check.php";
+//include "db_check.php";
 
 if (isset($_POST['Email']) && isset($_POST['Password']) && isset($_POST['FName']) && isset($_POST['LName']) && isset($_POST['Age']) && isset($_POST['Height']) && isset($_POST['Weight']) && isset($_POST['Ideal_Fat'])){
 

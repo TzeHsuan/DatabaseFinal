@@ -1,10 +1,10 @@
 <?php
-
+require_once dirname(__FILE__)."/db_check.php";
 session_start();
 
 if (isset($_SESSION['Email'])) {
 
-    include "db_check.php";
+    //include "db_check.php";
 
 	if (isset($_POST['oldPassword']) && isset($_POST['newPassword'])
     && isset($_POST['rePassword'])) {
