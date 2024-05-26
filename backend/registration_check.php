@@ -1,87 +1,92 @@
 <?php
-require_once dirname(__FILE__)."/db_check.php";
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, X-Requested-With, Authorization");
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 session_start();
-//include "db_check.php";
+include "db_check.php";
 
-if (isset($_POST['Email']) && isset($_POST['Password']) && isset($_POST['FName']) && isset($_POST['LName']) && isset($_POST['Age']) && isset($_POST['Height']) && isset($_POST['Weight']) && isset($_POST['Ideal_Fat'])){
-	$conn = db_check(); //added by Tsou
-	function validate($data){
-		$data = trim($data);
-	  	$data = stripslashes($data);
-	  	$data = htmlspecialchars($data);
-	  	return $data;
-	}
+// 读取输入流
+$json_data = file_get_contents("php://input");
+$data = json_decode($json_data, true); // 解码 JSON 数据为 PHP 数组
 
-	$Email = validate($_POST['Email']);
-	$Password = validate($_POST['Password']);
-	$re_pass = validate($_POST['passwordConfirm']);
-	$FName = validate($_POST['FName']);
-	$LName = validate($_POST['LName']);
-	$Age = validate($_POST['Age']);
-	$Height = validate($_POST['Height']);
-	$Weight = validate($_POST['Weight']);
-	$Ideal_Fat = validate($_POST['Ideal_Fat']);
+if (!empty($data) && isset($data['Email']) && isset($data['Password']) && isset($data['confirmPassword']) && isset($data['FName']) && isset($data['LName']) && isset($data['Age']) && isset($data['Height']) && isset($data['Weight']) && isset($data['Ideal_Fat'])) {
+    function validate($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
 
-  	$user_data = 'username='. $username;
+    $Email = validate($data['Email']);
+    $Password = validate($data['Password']);
+    $confirmPassword = validate($data['confirmPassword']);
+    $FName = validate($data['FName']);
+    $LName = validate($data['LName']);
+    $Age = validate($data['Age']);
+    $Height = validate($data['Height']);
+    $Weight = validate($data['Weight']);
+    $Ideal_Fat = validate($data['Ideal_Fat']);
+    $Diet_ID = isset($data['Diet_ID']) ? validate($data['Diet_ID']) : null;
 
-	if (empty($Email)) {
-		header("Location: /views/registration.php?error=請輸入Email&$user_data");
-	  	exit();
-	}else if(empty($Password)){
-    	header("Location: /views/registration.php?error=請輸入密碼&$user_data");
-	  	exit();
-	}
-	else if(empty($Password !== $re_pass)){
-    	header("Location: /views/registration.php?error=兩次輸入的密碼不一致&$user_data");
-	  	exit();
-	}
-  	else if(empty($FName)){
-    	header("Location: /HW3/hw3_php/views/registration.php?error=請輸入名字&$user_data");
-    	exit();
- 	}else if(empty($LName)){
-		header("Location: /HW3/hw3_php/views/registration.php?error=請輸入姓氏&$user_data");
-		exit();
-	}else if(empty($Age)){
-		header("Location: /HW3/hw3_php/views/registration.php?error=請輸入年齡&$user_data");
-		exit();
-	}else if(empty($Height)){
-		header("Location: /HW3/hw3_php/views/registration.php?error=請輸入身高&$user_data");
-		exit();
-	}else if(empty($Weight)){
-		header("Location: /HW3/hw3_php/views/registration.php?error=請輸入體重&$user_data");
-		exit();
-	}else if(empty($Ideal_Fat)){
-		header("Location: /HW3/hw3_php/views/registration.php?error=請輸入理想體脂&$user_data");
-		exit();
-	}
-	else{
+    if (empty($Email)) {
+        echo json_encode(["error" => "請輸入Email"]);
+        exit();
+    } else if (empty($Password)) {
+        echo json_encode(["error" => "請輸入密碼"]);
+        exit();
+    } else if ($Password !== $confirmPassword) {
+        echo json_encode(["error" => "兩次輸入的密碼不一致"]);
+        exit();
+    } else if (empty($FName)) {
+        echo json_encode(["error" => "請輸入名字"]);
+        exit();
+    } else if (empty($LName)) {
+        echo json_encode(["error" => "請輸入姓氏"]);
+        exit();
+    } else if (empty($Age)) {
+        echo json_encode(["error" => "請輸入年齡"]);
+        exit();
+    } else if (empty($Height)) {
+        echo json_encode(["error" => "請輸入身高"]);
+        exit();
+    } else if (empty($Weight)) {
+        echo json_encode(["error" => "請輸入體重"]);
+        exit();
+    } else if (empty($Ideal_Fat)) {
+        echo json_encode(["error" => "請輸入理想體脂"]);
+        exit();
+    } else {
+        $Password = md5($Password);
 
-		// hashing the password
-    	$Password = md5($Password);
+        $sql1 = "SELECT * FROM consultant WHERE Email='$Email'";
+        $result1 = mysqli_query($conn, $sql1);
 
-	  	$sql1 = "SELECT * FROM consultant WHERE Email='$Email' ";
-		$result1 = mysqli_query($conn, $sql1);    
-
-		if (mysqli_num_rows($result1) > 0) {
-			echo '<script> alert("此Email已註冊過，請嘗試其他Email"); window.location.href="/HW3/hw3_php/views/registration.php"; </script>';
-	    	exit();
-		}else {
-     		$sql3 = "INSERT INTO consultant (FName, LName, Email, Password, Age, Height, Weight, Ideal_Fat) VALUES('$FName', '$LName', '$Email', '$Password', '$Age', '$Height', '$Weight', '$Ideal_Fat)";
-
-     		$result3 = mysqli_query($conn, $sql3);
-      		if ($result3) {
-        		echo '<script> alert("帳號註冊成功！");window.location.href="/HW3/hw3_php/views/login.php"; </script>';
-	      		exit();
-      		}else {
-        		echo '<script> alert("Unkown error occured");window.location.href="/HW3/hw3_php/views/registration.php"; </script>';
-		    	exit();
-			}
-		}
-	}
-	
-}else{
-	header("Location: /views/registration.php");
-	exit();
+        if (mysqli_num_rows($result1) > 0) {
+            echo json_encode(["error" => "此Email已註冊過，請嘗試其他Email"]);
+            exit();
+        } else {
+            $sql2 = "INSERT INTO consultant (FName, LName, Email, Password, Age, Height, Weight, Ideal_Fat, Diet_ID, Reg_Date) VALUES('$FName', '$LName', '$Email', '$Password', '$Age', '$Height', '$Weight', '$Ideal_Fat', " . ($Diet_ID ? "'$Diet_ID'" : "NULL") . ", CURRENT_TIMESTAMP)";
+            $result2 = mysqli_query($conn, $sql2);
+            if ($result2) {
+                echo json_encode(["success" => "帳號註冊成功！"]);
+                exit();
+            } else {
+                echo json_encode(["error" => "未知错误发生"]);
+                exit();
+            }
+        }
+    }
+} else {
+    echo json_encode(["error" => "請填寫所有必填欄位"]);
+    exit();
 }
 
 $conn->close();
+?>

@@ -124,17 +124,6 @@ const Home = () => {
         </div>
       </Carousel>
 
-      <h3>
-        <Select
-          defaultValue="0" // 默认值设置为 '0'，即 "營養師"
-          style={{ width: 120 }}
-          onChange={handleChange}
-          options={[
-            { value: '0', label: '營養師' },
-            { value: '1', label: '諮商者' }
-          ]}
-        />
-      </h3>
 
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
         <Row gutter={[16, 16]} style={{ width: '100%', justifyContent: 'center' }}>

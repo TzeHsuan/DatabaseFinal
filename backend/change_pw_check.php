@@ -1,11 +1,11 @@
 <?php
-require_once dirname(__FILE__)."/db_check.php"; //added by Tsou
+
 session_start();
 
 if (isset($_SESSION['Email'])) {
 
-    //include "db_check.php";
-	$conn = db_check(); //added by Tsou
+    include "db_check.php";
+
 	if (isset($_POST['oldPassword']) && isset($_POST['newPassword'])
     && isset($_POST['rePassword'])) {
 

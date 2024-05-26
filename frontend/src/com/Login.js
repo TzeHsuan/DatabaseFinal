@@ -1,26 +1,37 @@
 import { Link, useHistory } from 'react-router-dom';
-import { LockOutlined, UserOutlined, GoogleOutlined } from '@ant-design/icons';
-import { Button, Divider, Form, Input, Checkbox, Row, Col } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Checkbox, Row, Col, Select } from 'antd';
 import axios from 'axios';
 import { reactLocalStorage } from 'reactjs-localstorage'; // 导入useLocalStorage钩子函数
+
+const { Option } = Select;
 
 const layout = {
   wrapperCol: { span: 24 },
 };
 
 const tailLayout = {
-  wrapperCol: { span: 24 },
+  wrapperYCol: { span: 24 },
 };
 
 export default function Login() {
-  const history = useHistory(); // 使用useHistory来进行页面跳转
+  const history = useHistory();
 
   const onFinish = async (values) => {
     console.log('Received values of form: ', values);
+
+    const postData = {
+      Email: values.Email,  // 从表单获取Email
+      Password: values.Password  // 从表单获取Password
+    };
+
+    const url = 'http://localhost/backend/Clogin_check.php';  // Adjusted endpoint if necessary
+
     try {
-      const response = await axios.post('http://localhost:7777/signin', {
-        email: values.username,
-        password: values.password
+      const response = await axios.post(url, postData, {
+        headers: {
+          'Content-Type': 'application/json'  // Ensuring to send data as JSON
+        }
       });
 
       console.log('Sign in successful', response.data);
@@ -53,7 +64,6 @@ export default function Login() {
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
-
   return (
     <Row>
       <Col span={17}>
@@ -79,19 +89,32 @@ export default function Login() {
           <Form
             {...layout}
             name="login"
-            initialValues={{ remember: true }}
+            initialValues={{ remember: true, type: 'consultant' }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
           >
             <Form.Item
-              name="username"
+              name="type"
+              rules={[{ required: true, message: 'Please select your login type!' }]}
+            >
+              <Select
+                placeholder="Select your login type"
+                allowClear
+              >
+                <Option value="consultant">諮商者</Option>
+                <Option value="diet">營養師</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="Email"
               rules={[{ required: true, message: '請輸入用戶名!' }]}
             >
               <Input prefix={<UserOutlined />} placeholder="Admin or User" />
             </Form.Item>
 
             <Form.Item
-              name="password"
+              name="Password"
               rules={[{ required: true, message: '請輸入密碼!' }]}
             >
               <Input.Password prefix={<LockOutlined />} placeholder="Password" />
@@ -116,17 +139,6 @@ export default function Login() {
               </Button>
             </Form.Item>
 
-            <Divider>其他登入方式</Divider>
-            <Row justify="center">
-              <Col span={4}>
-                <Button
-                  icon={<GoogleOutlined />}
-                  shape="circle"
-                  size="large"
-                />
-              </Col>
-            </Row>
-            <br/>
             <Row justify="center">
               <Col>
                 尚未成為會員？

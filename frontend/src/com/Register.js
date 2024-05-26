@@ -1,5 +1,5 @@
 import { Link, useHistory } from 'react-router-dom';
-import { LockOutlined, UserOutlined, MailOutlined, GoogleOutlined } from '@ant-design/icons';
+import { LockOutlined, UserOutlined, MailOutlined, IdcardOutlined, NumberOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Input, Checkbox, Row, Col, Select } from 'antd';
 import axios from 'axios';
 import { reactLocalStorage } from 'reactjs-localstorage'; // 导入useLocalStorage钩子函数
@@ -18,17 +18,31 @@ export default function Register() {
   const history = useHistory();
   const onFinish = async (values) => {
     console.log('Received values of form: ', values);
-    try{
-      const response = await axios.post('http://localhost:7777/signup', {
-        email: values.email,
-        password: values.password,
-    });
-    console.log('Register success', response.data);
-    history.push('/login');
-  } catch (error) {
-    console.error('Register failed', error);
+    const postData = {
+      Email: values.Email,
+      Password: values.password,
+      confirmPassword: values.confirmPassword,
+      FName: values.FName,
+      LName: values.LName,
+      Age: parseInt(values.Age, 10),
+      Height: parseFloat(values.Height),
+      Weight: parseFloat(values.Weight),
+      Ideal_Fat: parseFloat(values.Ideal_Fat),
+    };
+  
+    try {
+      const response = await axios.post('http://localhost/backend/registration_check.php', postData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('Register success', response.data);
+      history.push('/login');
+    } catch (error) {
+      console.error('Register failed', error.response.data);
     }
   };
+  
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
@@ -63,15 +77,27 @@ export default function Register() {
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
           >
-            <Form.Item
-              name="username"
-              rules={[{ required: true, message: '請輸入用戶名!' }, { type: 'Username', message: '請輸入有效的用戶名!' }]}
-            >
-              <Input prefix={<UserOutlined />} placeholder="Username" />
-            </Form.Item>
+            <Row gutter={8}>
+              <Col span={12}>
+                <Form.Item
+                  name="FName"
+                  rules={[{ required: true, message: '请输入您的名字!' }]}
+                >
+                  <Input prefix={<UserOutlined />} placeholder="First Name" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="LName"
+                  rules={[{ required: true, message: '请输入您的姓氏!' }]}
+                >
+                  <Input prefix={<IdcardOutlined />} placeholder="Last Name" />
+                </Form.Item>
+              </Col>
+            </Row>
 
             <Form.Item
-              name="email"
+              name="Email"
               rules={[{ required: true, message: '請輸入Email!' }, { type: 'email', message: '請輸入有效的电子信箱!' }]}
             >
               <Input prefix={<MailOutlined />} placeholder="Email" />
@@ -88,7 +114,36 @@ export default function Register() {
               name="confirmPassword"
               rules={[{ required: true, message: '請再次輸入密碼!' }]}
             >
-              <Input.Password prefix={<LockOutlined />} placeholder="ConfirmPassword" />
+              <Input.Password prefix={<LockOutlined />} placeholder="Confirm Password" />
+            </Form.Item>
+
+
+            <Form.Item
+              name="Age"
+              rules={[{ required: true, message: '请输入您的年龄!' }]}
+            >
+              <Input prefix={<NumberOutlined />} type="number" placeholder="Age" />
+            </Form.Item>
+
+            <Form.Item
+              name="Height"
+              rules={[{ required: true, message: '请输入您的身高 (cm)!' }]}
+            >
+              <Input prefix={<NumberOutlined />} type="number" placeholder="Height (cm)" />
+            </Form.Item>
+
+            <Form.Item
+              name="Weight"
+              rules={[{ required: true, message: '请输入您的体重 (kg)!' }]}
+            >
+              <Input prefix={<NumberOutlined />} type="number" placeholder="Weight (kg)" />
+            </Form.Item>
+
+            <Form.Item
+              name="Ideal_Fat"
+              rules={[{ required: true, message: '请输入您的理想体脂率 (%)!' }]}
+            >
+              <Input prefix={<NumberOutlined />} type="number" placeholder="Ideal Body Fat (%)" />
             </Form.Item>
 
             <Form.Item {...tailLayout} style={{ marginBottom: '1em' }}>
@@ -102,18 +157,7 @@ export default function Register() {
                 註冊
               </Button>
             </Form.Item>
-
-            <Divider>其他註冊方式</Divider>
-            <Row justify="center">
-              <Col span={4}>
-                <Button
-                  icon={<GoogleOutlined />}
-                  shape="circle"
-                  size="large"
-                />
-              </Col>
-            </Row>
-            <br/>
+            
             <Row justify="center">
               <Col>
                 已經成為會員？
