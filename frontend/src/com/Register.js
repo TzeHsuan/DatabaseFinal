@@ -81,7 +81,7 @@ export default function Register() {
               <Col span={12}>
                 <Form.Item
                   name="FName"
-                  rules={[{ required: true, message: '请输入您的名字!' }]}
+                  rules={[{ required: true, message: '請輸入您的名字!' }]}
                 >
                   <Input prefix={<UserOutlined />} placeholder="First Name" />
                 </Form.Item>
@@ -89,7 +89,7 @@ export default function Register() {
               <Col span={12}>
                 <Form.Item
                   name="LName"
-                  rules={[{ required: true, message: '请输入您的姓氏!' }]}
+                  rules={[{ required: true, message: '請輸入您的姓氏!' }]}
                 >
                   <Input prefix={<IdcardOutlined />} placeholder="Last Name" />
                 </Form.Item>
@@ -98,7 +98,7 @@ export default function Register() {
 
             <Form.Item
               name="Email"
-              rules={[{ required: true, message: '請輸入Email!' }, { type: 'email', message: '請輸入有效的电子信箱!' }]}
+              rules={[{ required: true, message: '請輸入Email!' }, { type: 'email', message: '請輸入有效的電子信箱!' }]}
             >
               <Input prefix={<MailOutlined />} placeholder="Email" />
             </Form.Item>
@@ -120,28 +120,28 @@ export default function Register() {
 
             <Form.Item
               name="Age"
-              rules={[{ required: true, message: '请输入您的年龄!' }]}
+              rules={[{ required: true, message: '請輸入您的年龄!' }]}
             >
               <Input prefix={<NumberOutlined />} type="number" placeholder="Age" />
             </Form.Item>
 
             <Form.Item
               name="Height"
-              rules={[{ required: true, message: '请输入您的身高 (cm)!' }]}
+              rules={[{ required: true, message: '請輸入您的身高 (cm)!' }]}
             >
               <Input prefix={<NumberOutlined />} type="number" placeholder="Height (cm)" />
             </Form.Item>
 
             <Form.Item
               name="Weight"
-              rules={[{ required: true, message: '请输入您的体重 (kg)!' }]}
+              rules={[{ required: true, message: '請輸入您的體重 (kg)!' }]}
             >
               <Input prefix={<NumberOutlined />} type="number" placeholder="Weight (kg)" />
             </Form.Item>
 
             <Form.Item
               name="Ideal_Fat"
-              rules={[{ required: true, message: '请输入您的理想体脂率 (%)!' }]}
+              rules={[{ required: true, message: '請輸入您的理想體脂率 (%)!' }]}
             >
               <Input prefix={<NumberOutlined />} type="number" placeholder="Ideal Body Fat (%)" />
             </Form.Item>
