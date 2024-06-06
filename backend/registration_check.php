@@ -10,83 +10,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 session_start();
-include "db_check.php";
+require "db_check.php"; // 确保这里正确包含了数据库连接文件
 
 // 读取输入流
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true); // 解码 JSON 数据为 PHP 数组
 
 if (!empty($data) && isset($data['Email']) && isset($data['Password']) && isset($data['confirmPassword']) && isset($data['FName']) && isset($data['LName']) && isset($data['Age']) && isset($data['Height']) && isset($data['Weight']) && isset($data['Ideal_Fat'])) {
-    function validate($data) {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
+    $Con_ID = uniqid();
+    $Email = mysqli_real_escape_string($conn, trim($data['Email']));
+    $Password = mysqli_real_escape_string($conn, trim($data['Password']));
+    $confirmPassword = mysqli_real_escape_string($conn, trim($data['confirmPassword']));
+    $FName = mysqli_real_escape_string($conn, trim($data['FName']));
+    $LName = mysqli_real_escape_string($conn, trim($data['LName']));
+    $Age = mysqli_real_escape_string($conn, trim($data['Age']));
+    $Height = mysqli_real_escape_string($conn, trim($data['Height']));
+    $Weight = mysqli_real_escape_string($conn, trim($data['Weight']));
+    $Ideal_Fat = mysqli_real_escape_string($conn, trim($data['Ideal_Fat']));
+    $Diet_ID = isset($data['Diet_ID']) ? mysqli_real_escape_string($conn, trim($data['Diet_ID'])) : null;
+
+    if (empty($Email) || empty($Password) || empty($confirmPassword) || empty($FName) || empty($LName) || empty($Age) || empty($Height) || empty($Weight) || empty($Ideal_Fat)) {
+        echo json_encode(["error" => "请填写所有必填字段"]);
+        exit();
     }
 
-    $Email = validate($data['Email']);
-    $Password = validate($data['Password']);
-    $confirmPassword = validate($data['confirmPassword']);
-    $FName = validate($data['FName']);
-    $LName = validate($data['LName']);
-    $Age = validate($data['Age']);
-    $Height = validate($data['Height']);
-    $Weight = validate($data['Weight']);
-    $Ideal_Fat = validate($data['Ideal_Fat']);
-    $Diet_ID = isset($data['Diet_ID']) ? validate($data['Diet_ID']) : null;
+    if ($Password !== $confirmPassword) {
+        echo json_encode(["error" => "两次输入的密码不一致"]);
+        exit();
+    }
 
-    if (empty($Email)) {
-        echo json_encode(["error" => "請輸入Email"]);
-        exit();
-    } else if (empty($Password)) {
-        echo json_encode(["error" => "請輸入密碼"]);
-        exit();
-    } else if ($Password !== $confirmPassword) {
-        echo json_encode(["error" => "兩次輸入的密碼不一致"]);
-        exit();
-    } else if (empty($FName)) {
-        echo json_encode(["error" => "請輸入名字"]);
-        exit();
-    } else if (empty($LName)) {
-        echo json_encode(["error" => "請輸入姓氏"]);
-        exit();
-    } else if (empty($Age)) {
-        echo json_encode(["error" => "請輸入年齡"]);
-        exit();
-    } else if (empty($Height)) {
-        echo json_encode(["error" => "請輸入身高"]);
-        exit();
-    } else if (empty($Weight)) {
-        echo json_encode(["error" => "請輸入體重"]);
-        exit();
-    } else if (empty($Ideal_Fat)) {
-        echo json_encode(["error" => "請輸入理想體脂"]);
+    // Hash the password
+    $hashedPassword = password_hash($Password, PASSWORD_DEFAULT);
+
+    // Prepare SQL statement to prevent SQL injection
+    $stmt = $conn->prepare("SELECT Email FROM consultant WHERE Email = ?");
+    $stmt->bind_param("s", $Email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        echo json_encode(["error" => "此Email已注册过，请尝试其他Email"]);
         exit();
     } else {
-        $Password = md5($Password);
+        $insert_stmt = $conn->prepare("INSERT INTO consultant (Con_ID, FName, LName, Email, Password, Age, Height, Weight, Ideal_Fat, Diet_ID, Reg_Date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
+        $insert_stmt->bind_param("sssssiiisi", $Con_ID, $FName, $LName, $Email, $hashedPassword, $Age, $Height, $Weight, $Ideal_Fat, $Diet_ID);
+        $success = $insert_stmt->execute();
 
-        $sql1 = "SELECT * FROM consultant WHERE Email='$Email'";
-        $result1 = mysqli_query($conn, $sql1);
-
-        if (mysqli_num_rows($result1) > 0) {
-            echo json_encode(["error" => "此Email已註冊過，請嘗試其他Email"]);
-            exit();
+        if ($success) {
+            echo json_encode(["success" => "账号注册成功！"]);
         } else {
-            $sql2 = "INSERT INTO consultant (FName, LName, Email, Password, Age, Height, Weight, Ideal_Fat, Diet_ID, Reg_Date) VALUES('$FName', '$LName', '$Email', '$Password', '$Age', '$Height', '$Weight', '$Ideal_Fat', " . ($Diet_ID ? "'$Diet_ID'" : "NULL") . ", CURRENT_TIMESTAMP)";
-            $result2 = mysqli_query($conn, $sql2);
-            if ($result2) {
-                echo json_encode(["success" => "帳號註冊成功！"]);
-                exit();
-            } else {
-                echo json_encode(["error" => "未知错误发生"]);
-                exit();
-            }
+            echo json_encode(["error" => "未知错误发生，无法注册账号"]);
         }
     }
+    $stmt->close();
+    $insert_stmt->close();
 } else {
-    echo json_encode(["error" => "請填寫所有必填欄位"]);
-    exit();
+    echo json_encode(["error" => "请填写所有必填字段"]);
 }
-
 $conn->close();
 ?>

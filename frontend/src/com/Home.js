@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Rate, Card, Row, Col, Select, Layout, Carousel } from 'antd';
-import { Link } from 'react-router-dom';
+import { Card, Row, Col, Layout, Carousel } from 'antd';
+import axios from 'axios';
 
 const { Meta } = Card;
 const { Content } = Layout;
@@ -31,51 +31,23 @@ const contentStyle1 = {
 };
 
 const Home = () => {
-  const [searchTerm, setSearchTerm] = useState('0'); // 设置初始值为 '0' 对应 “營養師”
   const [cardData, setCardData] = useState([]);
   const [filteredCardData, setFilteredCardData] = useState([]);
 
-  const fetchData = () => {
-    // 模拟从后端获取卡片数据的 API 调用
-    const dataFromBackend = [
-      // 營養師数据
-      
-      {
-        title: '張宸瑋',
-        description: '健美冠軍',
-        img: 'https://scontent-tpe1-1.cdninstagram.com/v/t39.30808-6/416575607_18266045107202244_6449706480810284076_n.jpg?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTcuc2RyLmYzMDgwOCJ9&_nc_ht=scontent-tpe1-1.cdninstagram.com&_nc_cat=100&_nc_ohc=4mjTNEjh5PsQ7kNvgGYwVyR&edm=ACWDqb8AAAAA&ccb=7-5&ig_cache_key=MzI3MjA5MDE0ODQxNDIxNjEwNw%3D%3D.2-ccb7-5&oh=00_AYCA1KltpfFpLcV7Re8a8DbBXgy0Ocb-t3eRoYv_ovQhdw&oe=6655018D&_nc_sid=ee9879',
-        productURL: '/product/1',
-        category: '0', // 營養師
-      },
-      {
-        title: '張宸瑋',
-        description: '健美冠軍',
-        img: 'https://scontent-tpe1-1.cdninstagram.com/v/t39.30808-6/416575607_18266045107202244_6449706480810284076_n.jpg?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTcuc2RyLmYzMDgwOCJ9&_nc_ht=scontent-tpe1-1.cdninstagram.com&_nc_cat=100&_nc_ohc=4mjTNEjh5PsQ7kNvgGYwVyR&edm=ACWDqb8AAAAA&ccb=7-5&ig_cache_key=MzI3MjA5MDE0ODQxNDIxNjEwNw%3D%3D.2-ccb7-5&oh=00_AYCA1KltpfFpLcV7Re8a8DbBXgy0Ocb-t3eRoYv_ovQhdw&oe=6655018D&_nc_sid=ee9879',
-        productURL: '/product/1',
-        category: '0', // 營養師
-      },
-      {
-        title: '張宸瑋',
-        description: '健美冠軍',
-        img: 'https://scontent-tpe1-1.cdninstagram.com/v/t39.30808-6/416575607_18266045107202244_6449706480810284076_n.jpg?stp=dst-jpg_e35&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE3OTcuc2RyLmYzMDgwOCJ9&_nc_ht=scontent-tpe1-1.cdninstagram.com&_nc_cat=100&_nc_ohc=4mjTNEjh5PsQ7kNvgGYwVyR&edm=ACWDqb8AAAAA&ccb=7-5&ig_cache_key=MzI3MjA5MDE0ODQxNDIxNjEwNw%3D%3D.2-ccb7-5&oh=00_AYCA1KltpfFpLcV7Re8a8DbBXgy0Ocb-t3eRoYv_ovQhdw&oe=6655018D&_nc_sid=ee9879',
-        productURL: '/product/1',
-        category: '0', // 營養師
-      },
-      // 添加更多卡片数据
-    ];
-
-    setCardData(dataFromBackend);
-    setFilteredCardData(dataFromBackend.filter(card => card.category === '0')); // 初始化时过滤数据
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost/backend/diets.php'); // 确保URL正确
+      const dataFromBackend = response.data;
+      setCardData(dataFromBackend);
+      setFilteredCardData(dataFromBackend); // 默认显示所有数据
+    } catch (error) {
+      console.error('获取数据失败', error);
+    }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleChange = (value) => {
-    setSearchTerm(value);
-    setFilteredCardData(cardData.filter(card => card.category === value));
-  };
 
   const styles = {
     container: {
@@ -91,15 +63,16 @@ const Home = () => {
     cardContainer: {
       width: '100%',
     },
-    link: {
-      textDecoration: 'none',
-      color: '#1890ff',
-      fontWeight: 'bold',
+    card: {
+      cursor: 'pointer', // 设置悬停时显示鼠标指针变化
     },
     image: {
       height: '200px',
       objectFit: 'contain',
       width: '100%',
+    },
+    gap: {
+      marginBottom: '40px', // 设置滚动显示与卡片之间的间距
     },
   };
 
@@ -124,31 +97,27 @@ const Home = () => {
         </div>
       </Carousel>
 
+      <div style={styles.gap}></div> {/* 用于设置滚动显示与卡片之间的间距 */}
 
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
         <Row gutter={[16, 16]} style={{ width: '100%', justifyContent: 'center' }}>
           {filteredCardData.map((card, index) => (
             <Col key={index} {...getColProps()}>
-              <Link to={card.productURL} style={styles.link}>
-                <div style={styles.cardContainer}>
-                  <Card
-                    hoverable
-                    cover={
-                      <img
-                        alt={card.title}
-                        src={card.img}
-                        style={styles.image}
-                      />
-                    }
-                  >
-                    <Meta title={card.title} description={card.description} />
-
-                    <div style={styles.linkContainer}>
-                      查看詳情
-                    </div>
-                  </Card>
-                </div>
-              </Link>
+              <div style={styles.cardContainer}>
+                <Card
+                  hoverable
+                  style={styles.card}
+                  cover={
+                    <img
+                      alt={`${card.Diet_Fname} ${card.Diet_Lname}`}
+                      src={card.img_url || 'https://via.placeholder.com/200'}
+                      style={styles.image}
+                    />
+                  }
+                >
+                  <Meta title={`${card.Diet_Fname} ${card.Diet_Lname}`} />
+                </Card>
+              </div>
             </Col>
           ))}
         </Row>

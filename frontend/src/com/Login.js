@@ -2,7 +2,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Checkbox, Row, Col, Select } from 'antd';
 import axios from 'axios';
-import { reactLocalStorage } from 'reactjs-localstorage'; // 导入useLocalStorage钩子函数
+import { reactLocalStorage } from 'reactjs-localstorage';
 
 const { Option } = Select;
 
@@ -11,7 +11,7 @@ const layout = {
 };
 
 const tailLayout = {
-  wrapperYCol: { span: 24 },
+  wrapperPanCol: { span: 24 },
 };
 
 export default function Login() {
@@ -21,40 +21,45 @@ export default function Login() {
     console.log('Received values of form: ', values);
 
     const postData = {
-      Email: values.Email,  // 从表单获取Email
-      Password: values.Password  // 从表单获取Password
+      Email: values.type === 'consultant' ? values.Email : null,
+      Diet_ID: values.type === 'diet' ? values.Email : null, // 在这里使用 Email 字段的值作为 Diet_ID
+      Password: values.Password,
+      type: values.type,
     };
 
-    const url = 'http://localhost/backend/Clogin_check.php';  // Adjusted endpoint if necessary
+    const url = 'http://localhost/backend/login_check.php';
 
     try {
       const response = await axios.post(url, postData, {
         headers: {
-          'Content-Type': 'application/json'  // Ensuring to send data as JSON
+          'Content-Type': 'application/json'
         }
       });
 
       console.log('Sign in successful', response.data);
 
-      if (response.data) {
-        // 接收后端提供的 session 和 msg
-        const session = response.data.session;  
-        const msg = response.data.msg;
-        // 现在你可以使用 session 和 msg 进行其他操作
-        console.log('Received session: ', session);
-        console.log('Received msg: ', msg);
-
-        reactLocalStorage.set('session', session);
-
-        const savedSession = reactLocalStorage.get('session');
-        if(savedSession === session){
-          console.log('Session saved successfully');
-        }else{
-          console.error('Session save failed');
+      if (response.data && response.data.msg === 0 && response.data.session) {
+        const { session, userType } = response.data;
+  
+        // 根据用户类型设置不同的键
+        if (userType === 1) {
+            reactLocalStorage.set('Diet_ID', session); // 为营养师设置 Diet_ID
+        } else {
+            reactLocalStorage.set('Con_ID', session); // 为膳食顾问设置 Con_ID
         }
-        history.push('/'); // 跳转到最初始页面
+        
+        reactLocalStorage.set('User_Type', userType);  // 保存 userType 到本地存储
+  
+        console.log('Received session: ', session);
+        console.log('Received userType: ', userType);
+  
+        if (userType === 1) {
+            history.push(`/diet/?uid=${session}`); // 跳转到 diet 用户的特定页面
+        } else {
+            history.push('/'); // 跳转到最初始页面
+        }
       } else {
-        console.error('Sign in failed: No data received from backend');
+        console.error('Sign in failed: No valid data received from backend');
       }
     } catch (error) {
       console.error('Sign in failed', error);
@@ -64,6 +69,7 @@ export default function Login() {
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
+
   return (
     <Row>
       <Col span={17}>
@@ -135,7 +141,7 @@ export default function Login() {
 
             <Form.Item {...tailLayout}>
               <Button type="primary" htmlType="submit" block>
-                  登入
+                登入
               </Button>
             </Form.Item>
 

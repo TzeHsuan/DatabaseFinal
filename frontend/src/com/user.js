@@ -1,66 +1,83 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Row, Col, Card, Layout } from 'antd';
-const { Meta } = Card;
+import { Layout, Progress, Button, Tabs, Affix } from 'antd';
+import { BrowserRouter as Router, useHistory  } from 'react-router-dom';
+
 const { Content } = Layout;
+const { TabPane } = Tabs;
 
-export default class UserGroupList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      diets: [],
-      consultantId: null,
-    };
-  }
+const UserGroupList = () => {
+  const history = useHistory();
+  const [consultantInfo, setConsultantInfo] = useState({
+    Age: null,
+    Height: null,
+    TargetWeight: null,
+    CurrentWeight: null
+  });
+  const [reviews, setReviews] = useState([]);
 
-  componentDidMount() {
-    this.loadUserData();
-  }
-
-  loadUserData() {
-    // 从本地存储或通过props获取consultantId
-    const consultantId = localStorage.getItem('ID'); // 假设ID存储在localStorage
-    this.setState({ consultantId });
+  useEffect(() => {
+    const consultantId = localStorage.getItem('Con_ID'); // 假设Con_ID存储在localStorage
 
     if (consultantId) {
-      this.fetchDiets(consultantId);
+      fetchConsultantData(consultantId);
     }
-  }
+  }, []);
 
-  fetchDiets(consultantId) {
-    axios.get(`http://localhost:5000/diets?consultantId=${consultantId}`)
+  const handleButtonClick = () => {
+    history.push('/create');
+  };
+
+  const fetchConsultantData = (consultantId) => {
+    axios.get(`http://localhost/backend/get_user_info.php?con_id=${consultantId}`)
       .then(response => {
-        this.setState({
-          diets: response.data
-        });
+        setConsultantInfo(response.data.consultantInfo);
+        setReviews(response.data.reviews);
       })
       .catch(error => {
         console.log(error);
       });
-  }
+  };
 
-  renderDiets() {
-    return this.state.diets.map((diet, index) => (
-      <Col key={index} span={8}>
-        <Card
-          hoverable
-          cover={<img alt="example" src="https://via.placeholder.com/300.png" />} // 例子图片地址
-        >
-          <Meta title={`${diet.Diet_Fname} ${diet.Diet_Lname}`} description={`ID: ${diet.Diet_ID}`} />
-        </Card>
-      </Col>
-    ));
-  }
+  const progressPercent = consultantInfo.CurrentWeight && consultantInfo.TargetWeight
+    ? Math.floor((consultantInfo.CurrentWeight / consultantInfo.TargetWeight) * 100)
+    : 0;
 
-  render() {
-    return (
-      <Layout className="layout">
-        <Content style={{ padding: '0 50px', marginTop: 64 }}>
-          <Row gutter={16}>
-            {this.renderDiets()}
-          </Row>
+  return (
+    <Router>
+      <Layout style={{ background: 'white' }}>
+        <Content style={{ width: '80%', margin: '0 auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+            <div style={{ width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div style={{ marginBottom: '1rem' }}>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <h3>年龄: {consultantInfo.Age}</h3>
+                <h3>身高 (cm): {consultantInfo.Height}</h3>
+                <h3>初始体重 (kg): {consultantInfo.TargetWeight ?? 'N/A'}</h3>
+                <h3>当前体重 (kg): {consultantInfo.CurrentWeight ?? 'N/A'}</h3>
+                <Progress percent={progressPercent} />
+              </div>
+              <Affix offsetTop={0}>
+                <Button type="primary" style={{ marginBottom: '1rem', width: '30%' }} onClick={handleButtonClick}>查看詳情</Button>
+              </Affix>
+            </div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: '70%' }}>
+              <Tabs defaultActiveKey="1" centered>
+                <TabPane tab="评论回复" key="1">
+                  {reviews.map((review, index) => (
+                    <p key={index}><b>{review.title}:</b> {review.comment} ({review.date})</p>
+                  ))}
+                </TabPane>
+              </Tabs>
+            </div>
+          </div>
         </Content>
       </Layout>
-    );
-  }
-}
+    </Router>
+  );
+};
+
+export default UserGroupList;

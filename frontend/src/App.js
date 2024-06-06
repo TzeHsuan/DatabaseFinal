@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
 import './App.css';
-//import CustomCard from './com/Card';
 import Navbar from './com/Navbar';
 import Login from './com/Login';
 import Register from './com/Register';
 import Home from './com/Home';
-//import Footer from './com/footer';
-import Detailpage from './com/newpage'
-//import Detailpage from './com/itempage'
+import Choose from './com/newpage'
 import User from './com/user'
 import Create from './com/create'
-import Search from './com/Search'
-// <<<<<<< HEAD
-// import Search_card from './com/search_Card'
-// =======
-//import Search from './com/Search'
-// >>>>>>> 0a164bbf650932e2430274c1f0b76f7538cf8519
+import Review from './com/Review'
+import Diet from './com/diet'
+
 
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
 function App() {
@@ -36,12 +30,6 @@ function App() {
             </div>
           </Route>
 
-          {/* <Route path="/search">
-            <div className='search'>
-              <Search />
-            </div>
-          </Route> */}
-
           <Route path="/register">
             <div className='register'>
               <Register />
@@ -61,25 +49,10 @@ function App() {
             </div>
           </Route>
 
-          {/* <Route path="/search_Card">
-            <div className='search_Card'>
+          <Route path="/choose">
+            <div className='choose'>
             <Navbar />
-              <Search_card />
-            </div>
-          </Route> */}
-
-
-          <Route path="/detail">
-            <div className='Detailpage'>
-            <Navbar />
-              <Detailpage />
-            </div>
-          </Route>
-          
-          <Route path="/search">
-            <div className='search'>
-              <Navbar />
-                <Search />
+              <Choose />
             </div>
           </Route>
 
@@ -90,25 +63,28 @@ function App() {
             </div>
           </Route>
 
+          <Route path="/register">
+            <div className='register'>
+              <Register />
+            </div>
+          </Route>
+
+          <Route path="/review">
+            <div className='review'>
+              <Review />
+            </div>
+          </Route>
+
+          <Route path="/diet">
+            <div className='diet'>
+              <Diet />
+            </div>
+          </Route>
+
         </Switch>
       </div>
     </Router>
   );
-  // return (
-  //   <Router>
-  //   <div className="App">
-  //       <Switch>
-  //         <Route path="/" >
-  //         <Bar collapsed={collapsed} setCollapsed={setCollapsed}>
-  //         <CustomCard data={cardData} />
-  //         </Bar>
-  //         </Route>
-  //       </Switch>
-      
-      
-  //   </div>
-  //   </Router>
-  // );
 }
 
 export default App;
